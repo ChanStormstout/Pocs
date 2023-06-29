@@ -1,0 +1,4 @@
+
+	mov ax, 0002
+	add ax, ax
+	addþ

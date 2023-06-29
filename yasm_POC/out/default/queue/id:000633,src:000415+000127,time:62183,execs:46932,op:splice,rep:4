@@ -1,0 +1,176 @@
+ÿVe; 247 - ÔÚÖ±½Ó¶¨Ö·±íÖĞ´¢´æ×Ó³ÌĞòµØÖ·£¬ÊµÏÖ·½±ãµÄ×Ó³ÌĞòµ÷ÓÃ
+; ======================================================
+
+; ÔÚÖ±½Ó¶¨Ö·±íÖĞ´¢´æ×Ó³ÌĞòµÄµØÖ·£¬´Ó¶ø·½±ãµÄÊµÏÖ²»Í¬×Ó³ÌĞòµÄµ÷ÓÃ
+; 
+; ÊµÏÖÒ»¸ö setscreen£¬ÎªÏÔÊ¾Êä³öÌá¹©ÒÔÏÂ¹¦ÄÜ
+; 
+; £¨1£©ÇåÆÁ
+; £¨2£©ÉèÖÃÇ°¾°É«£¬ÎÄ×ÖÑÕÉ«
+; £¨3£©ÉèÖÃ±³¾°É«
+; £¨4£©ÏòÉÏ¹ö¶¯Ò»ĞĞ
+; 
+; Èë¿Ú²ÎÊıµÄËµÃ÷ÈçÏÂ£º
+; ah - ´«µİ¹¦ÄÜºÅ£º0 - ÇåÆÁ£¬1 - ÉèÖÃÇ°¾°É«£¬ 2 - ÉèÖÃ±³¾°É«£¬3 - ÏòÉÏ¹ö¶¯Ò»ĞĞ
+; al - ´«µİÑÕÉ«{0 ~ 7}
+
+; £¨1£©ÇåÆÁ		½«ÏÔ´æÖĞµ±Ç°ÆÁÄ»ÖĞµÄ×Ö·ûÉèÖÃÎª¿Õ¸ñ·û	
+; £¨2£©ÉèÖÃÇ°¾°		ÉèÖÃµ±Ç°ÏÔ´æÖĞµ±Ç°ÆÁÄ»ÖĞ´¦ÓÚ ÆæµØÖ· µÄÊôĞÔ×Ö½ÚµÄ µÚ 0,1,2 Î»
+; £¨3£©ÉèÖÃ±³¾°É«	ÉèÖÃµ±Ç°ÏÔ´æÖĞµ±Ç°ÆÁÄ»ÖĞ´¦ÓÚ ÆæµØÖ· µÄÊôĞÔ×Ö½ÚµÄ µÚ 4,5,6 Î»
+; £¨4£©ÏòÉÏ¹ö¶¯Ò»ĞĞ	ÒÀ´Î½«µÚn+1ĞĞµÄÄÚÈİ¸´ÖÆµ½ n ĞĞ´¦£»×îºóÒ»ĞĞÎª¿Õ
+; 
+
+; ======================================================
+
+; ¸ĞÎò£º¿ÉÒÔ°ÑÕâÖÖÓÃ±êºÅµÄÊ¹ÓÃ¿´×ö³É C/C++ ÖĞµÄÊı×é
+
+; ======================================================
+assume cs:codesg, ss:stacksg
+; ======================================================
+stacksg segment stack
+	db 128 dup (0)
+stacksg ends
+; ======================================================
+codesg segment
+start:		mov ax, stacksg
+		mov ss, ax
+		mov sp, 128
+
+	;	mov ah, 0
+	;	call set_screen
+
+		mov ah, 1
+		mov al, 00000110B
+		call set_screen
+
+		mov ah, 2
+		mov al, 00100000B
+		call set_screen
+
+		mov ah, 3
+		call set_screen
+
+		mov ax, 4c00h
+		int 21h
+
+	; ---------------------------------------------
+	; ½«ÕâĞ©ÉèÖÃ³ÌĞò¹¦ÄÜ×Ó³ÌĞòµÄÈë¿ÚµØÖ·´¢´æÔÚÒ»¸ö±íÖĞ£¬ËûÃÇÔÚ±íÖĞµÄ¹¦ÄÜºÍÎ»ÖÃÏà¶ÔÓ¦¡£
+	; ¶ÔÓ¦¹ØÏµÎª£º¹¦ÄÜºÅ * 2 = ¶ÔÓ¦µÄ¹¦ÄÜ×Ó³ÌĞòÔÚµØÖ·±íÖĞµÄÆ«ÒÆ
+	set_screen:	jmp _setScreen
+		
+			table	dw	clear_screen, set_font, set_background, up_row
+
+	_setScreen:	push bx
+
+			cmp ah, 3
+			ja _retSet
+			mov bl, ah
+			mov bh, 0
+			add bx, bx	; ¸ù¾İ ah ÖĞµÄ¹¦ÄÜºÅ¼ÆËã¶ÔËã¶ÔÓ¦×Ó³ÌĞòÔÚ table ±íÖĞµÄÆ«ÒÆ
+
+			call word ptr table[bx]
+
+	_retSet:	pop bx
+			ret
+		
+
+			
+	; ---------------------------------------------
+	; £¨1£©Ç
+			a½«ÏÔ´æÖĞµ±Ç°ÆÁÄ»ÖĞµÄ×Ö·ûÉèÖÃÎª¿Õ¸ñ·û
+	clear_screen:	push bx
+			push cx
+			push es
+
+			mov bx, 0B800h
+			mov es, bx
+			mov bx, 0
+			mov cx, 2000
+
+	_clearScreen:	mov es:[bx], 0700H
+			add bx, 2
+			loop _clearScreen
+
+			pop es
+			pop cx
+			pop bx
+			ret
+
+	; ---------------------------------------------
+	; £¨2£©ÉèÖÃÇ°¾°		ÉèÖÃµ±Ç°ÏÔ´æÖĞµ±Ç°ÆÁÄ»ÖĞôĞÔ×Ö½ÚµÄ µÚ 4,5,6 Î´¦ÓÚ ÆæµØÖ· µÄÊôĞÔ×Ö½ÚµÄ µÚ 0,1,2 Î»
+	set_font:	push bx
+			push cx
+			push es
+
+			mov bx, 0B800H
+			mov es, bx
+			mov bx, 1
+			mov cx, 2000
+	
+	_set,ont:	and byte ptr es:[bx], 11111000B
+			or es:[bx], al
+			add bx, 2
+			loop _setFont
+		
+			pop es
+			pop cx
+			pop bx
+			ret
+
+	; ---------------------------------------------
+	;£¨3£©ÉèÖÃ±³¾°É«	ÉèÖÃµ±Ç°ÏÔ´æÖĞµ±Ç°ÆÁÄ»ÖĞ´¦ÓÚ ÆæµØÖ· µÄÊôĞÔ×Ö½ÚµÄ µÚ 4,5,6 Î»
+	set_background:	push bx
+			push cx
+			push es
+
+			mov bx, 0B00H
+			mov es, bx
+			mov bx, 1
+			mov cx, 2000
+
+	_setBackground:	and byte ptr es:[bx], 10001111B
+			or es:[bx], al
+			add bx, 2
+			loop _setBackground
+
+			pop es
+			pop cx
+			pop bx
+			ret
+
+	; ---------------------------------------------
+	; £¨4£©ÏòÉÏ¹ö¶¯Ò»ĞĞ	ÒÀ´Î½«µÚn+1ĞĞµÄÄÚÈİ¸´ÖÆµ½ n ĞĞ´¦£»×îºóÒ»ĞĞÎª¿Õ
+	up_row:		push bx
+			push cx
+			push ds
+			push es
+			push di
+			push si
+			
+			mov bx, 0B800H
+			mov es, bx
+			mov ds, bx
+			mov di, 0
+			mov si, 160
+			mov cx, 160 * 23
+
+			cld	; ÕıÏò´«ËÍ
+			rep movsw
+
+			; ×îºóÒ»ĞĞÇå¿Õ
+			mov cx, 160
+	_upRow:		mov ds:[si], 0700H
+			add si, 2
+			loop _upRow
+
+			pop si
+			pop di
+			pop es
+			pop ds
+			pop cx
+			pop bx
+			ret
+
+
+codesg ends
+end sta

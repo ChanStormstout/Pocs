@@ -1,0 +1,4 @@
+mov es, ax
+			mov si, 0
+
+			

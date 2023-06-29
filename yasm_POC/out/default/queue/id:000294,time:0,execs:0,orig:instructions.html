@@ -1,0 +1,3424 @@
+<html>
+	<head>
+		<style>
+body {
+	font-family: sans-serif;
+	font-size: 1em;
+}
+table {
+	border-collapse: collapse;
+}
+td {
+	border: 2px solid #ccc;
+	padding: 2px;
+}
+p {
+	padding: 0.1em;
+	margin: 0;
+}
+
+td.reserved {
+	color: #888;
+	background: repeating-linear-gradient(
+		135deg,
+		#eee,
+		#eee 8px,
+		#ddd 10px,
+		#ddd 16px,
+		#eee 18px
+	);
+}
+
+td.unsupported {
+	color: #864;
+	background: repeating-linear-gradient(
+		135deg,
+		#fdb,
+		#fdb 8px,
+		#eca 10px,
+		#eca 16px,
+		#fdb 18px
+	);
+}
+
+td.unused {
+	color: #888;
+	background: repeating-linear-gradient(
+		135deg,
+		#eee,
+		#eee 8px,
+		#ddd 10px,
+		#ddd 16px,
+		#eee 18px
+	);
+}
+
+thead,tr.group {
+	font-weight: bold;
+	background: #eee;
+}
+
+.mnemonic {
+	font-family: monospace;
+	font-size: 1.2em;
+}
+
+.operand {
+	background-color: #8ac;
+	color: #fff;
+	font-size: 0.8em;
+	font-family: sans-serif;
+	display: inline-block;
+	min-width: 10px;
+	margin-left: 1px;
+	margin-right: 1px;
+	padding: 2px 2px;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: 3px;
+}
+
+.ext {
+	display: inline-block;
+	float: right;
+	min-width: 10px;
+	padding: 3px 7px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: 10px;
+}
+
+.abi {
+	display: inline-block;
+	min-width: 10px;
+	padding: 3px 7px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: 10px;
+}
+
+.arch {
+	display: inline-block;
+	float: right;
+	min-width: 10px;
+	padding: 3px 7px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: #fff;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: 10px;
+}
+
+.arch-ev4 {
+	background-color: #48c;
+}
+
+.arch-ev5 {
+	background-color: #48c;
+}
+
+.arch-ev67 {
+	background-color: #48c;
+}
+
+.arch-ev68a {
+	background-color: #48c;
+}
+
+.arch-ev68c {
+	background-color: #48c;
+}
+
+.ext-cix {
+	background-color: #48c;
+}
+
+.ext-mvi {
+	background-color: #a44;
+}
+
+.ext-fix {
+	background-color: #684;
+}
+
+.ext-bwx {
+	background-color: #c82;
+}
+
+.abi-winnt {
+	background-color: #555;
+}
+
+.abi-osf1 {
+	background-color: #684;
+}
+
+.abi-openvms {
+	background-color: #48c;
+}
+		</style>
+	</head>
+	<body>
+
+<h2>DEC Alpha instruction encoding</h2>
+
+<h3>Encoding groups</h3>
+
+<table>
+	<thead>
+		<tr>
+			<td>31..26</td>
+			<td>25..21</td>
+			<td>20..16</td>
+			<td>15..13</td>
+			<td>12</td>
+			<td>11</td>
+			<td>10..9</td>
+			<td>8..5</td>
+			<td>4..0</td>
+			<td>Category</td>
+		</tr>
+	</thead>
+	<tr>
+		<td>000000</td>
+		<td colspan="8">index</td>
+		<td>PAL call</td>
+	</tr>
+	<tr>
+		<td>opcode</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td class="unused"></td>
+		<td>0</td>
+		<td colspan="3">function</td>
+		<td>Rc</td>
+		<td>operate format / integer register</td>
+	</tr>
+	<tr>
+		<td>opcode</td>
+		<td>Ra</td>
+		<td colspan="2">literal</td>
+		<td>1</td>
+		<td colspan="3">function</td>
+		<td>Rc</td>
+		<td>operate format / integer literal</td>
+	</tr>
+	<tr>
+		<td>opcode</td>
+		<td>Fa</td>
+		<td>Fb</td>
+		<td>type</td>
+		<td colspan="2">round</td>
+		<td>size</td>
+		<td>function</td>
+		<td>Fc</td>
+		<td>operate format / floating-point</td>
+	</tr>
+	<tr>
+		<td>opcode</td>
+		<td>Ra</td>
+		<td colspan="7">displacement</td>
+		<td>branch format</td>
+	</tr>
+	<tr>
+		<td>opcode</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td colspan="6">displacement</td>
+		<td>memory format</td>
+	</tr>
+</table>
+
+<h3>Instruction set extensions</h3>
+
+<table>
+	<thead>
+		<tr>
+			<td>Mnemonic</td>
+			<td>Description</td>
+			<td>Introduced on</td>
+		</tr>
+	</thead>
+	<tr>
+		<td><span class="ext ext-bwx">BWX</span></td>
+		<td>Byte-word extensions</td>
+		<td>21164A (EV56)</td>
+	</tr>
+	<tr>
+		<td><span class="ext ext-fix">FIX</span></td>
+		<td>Square-root and floating-point convert extension</td>
+		<td>21264 (EV6)</td>
+	</tr>
+	<tr>
+		<td><span class="ext ext-cix">CIX</span></td>
+		<td>Count extensions</td>
+		<td>21264A (EV67)</td>
+	</tr>
+	<tr>
+		<td rowspan="3"><span class="ext ext-mvi">MVI</span></td>
+		<td rowspan="3">Motion video instructions</td>
+		<td>21164PC (PCA56,PCA57)</td>
+	</tr>
+	<tr>
+		<td>21264 (EV6)</td>
+	</tr>
+	<tr>
+		<td>21364 (EV7)</td>
+	</tr>
+</table>
+
+<h3>Instruction encoding</h3>
+
+<table>
+	<tr class="group">
+		<td colspan="10">PALcall group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td colspan="8">25..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="4">000000</td>
+		<td colspan="8">index</td>
+		<td><span class="mnemonic">call_pal <span class="operand">index</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="8">0x00</td>
+		<td><span class="mnemonic">halt</span></td>
+	</tr>
+	<tr>
+		<td colspan="8">0x02</td>
+		<td><span class="mnemonic">draina</span></td>
+	</tr>
+	<tr>
+		<td colspan="8">0x86</td>
+		<td><span class="mnemonic">imb</span></td>
+	</tr>
+	<tr>
+		<td>000001</td>
+		<td rowspan="7" colspan="8">Compaq reserved</td>
+		<td><span class="mnemonic">opc01</span></td>
+	</tr>
+	<tr>
+		<td>000010</td>
+		<td><span class="mnemonic">opc02</span></td>
+	</tr>
+	<tr>
+		<td>000011</td>
+		<td><span class="mnemonic">opc03</span></td>
+	</tr>
+	<tr>
+		<td>000100</td>
+		<td><span class="mnemonic">opc04</span></td>
+	</tr>
+	<tr>
+		<td>000101</td>
+		<td><span class="mnemonic">opc05</span></td>
+	</tr>
+	<tr>
+		<td>000110</td>
+		<td><span class="mnemonic">opc06</span></td>
+	</tr>
+	<tr>
+		<td>000111</td>
+		<td><span class="mnemonic">opc07</span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Load/store group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="6">15..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>001000</td>
+		<td rowspan="8">Ra</td>
+		<td rowspan="8">Rb</td>
+		<td rowspan="8" colspan="6">disp</td>
+		<td><span class="mnemonic">lda <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>001001</td>
+		<td><span class="mnemonic">ldah <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>001010</td>
+		<td><span class="mnemonic">ldbu <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span> <span class="ext ext-bwx">BWX</span></td>
+	</tr>
+	<tr>
+		<td>001011</td>
+		<td><span class="mnemonic">ldq_u <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>001100</td>
+		<td><span class="mnemonic">ldwu <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span> <span class="ext ext-bwx">BWX</span></td>
+	</tr>
+	<tr>
+		<td>001101</td>
+		<td><span class="mnemonic">stw <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span> <span class="ext ext-bwx">BWX</span></td>
+	</tr>
+	<tr>
+		<td>001110</td>
+		<td><span class="mnemonic">stb <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span> <span class="ext ext-bwx">BWX</span></td>
+	</tr>
+	<tr>
+		<td>001111</td>
+		<td><span class="mnemonic">stq_u <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Arithmetic group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td>12</td>
+		<td colspan="3">11..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="22">010000</td>
+		<td rowspan="22">Ra</td>
+		<td rowspan="22">Rb</td>
+		<td rowspan="22" class="unused">000</td>
+		<td rowspan="22">0</td>
+		<td colspan="3">0000000</td>
+		<td rowspan="22">Rc</td>
+		<td><span class="mnemonic">addl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0000010</td>
+		<td><span class="mnemonic">s4addl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0001001</td>
+		<td><span class="mnemonic">subl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0001011</td>
+		<td><span class="mnemonic">s4subl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0001111</td>
+		<td><span class="mnemonic">cmpbge <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0010010</td>
+		<td><span class="mnemonic">s8addl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0011010</td>
+		<td><span class="mnemonic">s8subl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>	</tr>
+	<tr>
+		<td colspan="3">0011101</td>
+		<td><span class="mnemonic">cmpult <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100000</td>
+		<td><span class="mnemonic">addq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100010</td>
+		<td><span class="mnemonic">s4addq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0101001</td>
+		<td><span class="mnemonic">subq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0101011</td>
+		<td><span class="mnemonic">s4subq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0101111</td>
+		<td><span class="mnemonic">cmpeq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110010</td>
+		<td><span class="mnemonic">s8addq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111010</td>
+		<td><span class="mnemonic">s8subq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111101</td>
+		<td><span class="mnemonic">cmpule <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1000000</td>
+		<td><span class="mnemonic">addl/v <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1001001</td>
+		<td><span class="mnemonic">subl/v <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1001101</td>
+		<td><span class="mnemonic">cmplt <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1100000</td>
+		<td><span class="mnemonic">addq/v <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1101001</td>
+		<td><span class="mnemonic">subq/v <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1101101</td>
+		<td><span class="mnemonic">cmple <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Bitwise logic</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td>12</td>
+		<td colspan="3">11..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="16">010001</td>
+		<td rowspan="12">Ra</td>
+		<td rowspan="15">Rb</td>
+		<td rowspan="15" class="unused">000</td>
+		<td rowspan="15">0</td>
+		<td colspan="3">0000000</td>
+		<td rowspan="16">Rc</td>
+		<td><span class="mnemonic">and <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0001000</td>
+		<td><span class="mnemonic">bic <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0010100</td>
+		<td><span class="mnemonic">cmovlbs <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0010110</td>
+		<td><span class="mnemonic">cmovlbc <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100000</td>
+		<td><span class="mnemonic">bis <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100100</td>
+		<td><span class="mnemonic">cmoveq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100110</td>
+		<td><span class="mnemonic">cmovne <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0101000</td>
+		<td><span class="mnemonic">ornot <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1000000</td>
+		<td><span class="mnemonic">xor <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1000100</td>
+		<td><span class="mnemonic">cmovlt <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1000110</td>
+		<td><span class="mnemonic">cmovge <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1001000</td>
+		<td><span class="mnemonic">eqv <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td colspan="3">1100001</td>
+		<td><span class="mnemonic">amask <span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td rowspan="2">Ra</td>
+		<td colspan="3">1100100</td>
+		<td><span class="mnemonic">cmovle <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1100110</td>
+		<td><span class="mnemonic">cmovgt <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>00000</td>
+		<td>001</td>
+		<td>1</td>
+		<td colspan="3">1101100</td>
+		<td><span class="mnemonic">implver <span class="operand">Rc</span></span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Mask/insert/extract group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td>12</td>
+		<td colspan="3">11..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="26">010010</td>
+		<td rowspan="26">Ra</td>
+		<td rowspan="26">Rb</td>
+		<td rowspan="26" class="unused">000</td>
+		<td rowspan="26">0</td>
+		<td colspan="3">0000010</td>
+		<td rowspan="26">Rc</td>
+		<td><span class="mnemonic">mskbl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0000110</td>
+		<td><span class="mnemonic">extbl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0001011</td>
+		<td><span class="mnemonic">insbl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0010010</td>
+		<td><span class="mnemonic">mskwl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0010110</td>
+		<td><span class="mnemonic">extwl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0011011</td>
+		<td><span class="mnemonic">inswl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100010</td>
+		<td><span class="mnemonic">mskll <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100110</td>
+		<td><span class="mnemonic">extll <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0101011</td>
+		<td><span class="mnemonic">insll <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110000</td>
+		<td><span class="mnemonic">zap <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110001</td>
+		<td><span class="mnemonic">zapnot <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110010</td>
+		<td><span class="mnemonic">mskql <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110100</td>
+		<td><span class="mnemonic">srl <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110110</td>
+		<td><span class="mnemonic">extql <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111001</td>
+		<td><span class="mnemonic">sll <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111011</td>
+		<td><span class="mnemonic">insql <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111100</td>
+		<td><span class="mnemonic">sra <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1010010</td>
+		<td><span class="mnemonic">mskwh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1010111</td>
+		<td><span class="mnemonic">inswh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1011010</td>
+		<td><span class="mnemonic">extwh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1100010</td>
+		<td><span class="mnemonic">msklh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1100111</td>
+		<td><span class="mnemonic">inslh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1101010</td>
+		<td><span class="mnemonic">extlh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1110010</td>
+		<td><span class="mnemonic">mskqh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1110111</td>
+		<td><span class="mnemonic">insqh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1111010</td>
+		<td><span class="mnemonic">extqh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Multiply group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td>12</td>
+		<td colspan="3">11..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="5">010011</td>
+		<td rowspan="5">Ra</td>
+		<td rowspan="5">Rb</td>
+		<td rowspan="5" class="unused">000</td>
+		<td rowspan="5">0</td>
+		<td colspan="3">0000000</td>
+		<td rowspan="5">Rc</td>
+		<td><span class="mnemonic">mull <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0100000</td>
+		<td><span class="mnemonic">mulq <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110000</td>
+		<td><span class="mnemonic">umulh <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1000000</td>
+		<td><span class="mnemonic">mull/v <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="3">1100000</td>
+		<td><span class="mnemonic">mulq/v <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">
+			IEEE floating point group
+			<p>
+			<table>
+				<tr>
+					<td>trap</td>
+					<td>Trapping mode</td>
+				</tr>
+				<tr>
+					<td>000</td>
+					<td>Imprecise (default)</td>
+				</tr>
+				<tr>
+					<td rowspan="2">001</td>
+					<td>Underflow enable (/u) (floating-point output)</td>
+				</tr>
+				<tr>
+					<td>Overflow enable (/v) (integer output)</td>
+				</tr>
+				<tr>
+					<td>010</td>
+					<td rowspan="3">Unsupported</td>
+				</tr>
+				<tr>
+					<td>011</td>
+				</tr>
+				<tr>
+					<td>100</td>
+				</tr>
+				<tr>
+					<td rowspan="2">101</td>
+					<td>/su Floating-point output</td>
+				</tr>
+				<tr>
+					<td>/sv Integer output</td>
+				</tr>
+				<tr>
+					<td>110</td>
+					<td>Unsupported</td>
+				</tr>
+				<tr>
+					<td rowspan="2">111</td>
+					<td>/sui Floating-point output</td>
+				</tr>
+				<tr>
+					<td>/svi Integer output</td>
+				</tr>
+			</table>
+			</p>
+
+			<p>
+			<table>
+				<tr>
+					<td>round</td>
+					<td>Rounding mode</td>
+				</tr>
+				<tr>
+					<td>00</td>
+					<td>Chopped (/c)</td>
+				</tr>
+				<tr>
+					<td>01</td>
+					<td>Minus infinity (/m)</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>Normal (default)</td>
+				</tr>
+				<tr>
+					<td>11</td>
+					<td>Dynamiic (/d)</td>
+				</tr>
+			</table>
+			</p>
+
+			<p>
+			<table>
+				<tr>
+					<td>size</td>
+					<td>Data size (1)</td>
+					<td>Data size (2)</td>
+				</tr>
+				<tr>
+					<td>00</td>
+					<td>S_floating (s)</td>
+					<td>S_floating (s)</td>
+				</tr>
+				<tr>
+					<td>01</td>
+					<td>reserved</td>
+					<td>unsupported</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>T_floating (t)</td>
+					<td>T_floating (t)</td>
+				</tr>
+				<tr>
+					<td>11</td>
+					<td>Q_fixed (q)</td>
+					<td>unsupported</td>
+				</tr>
+			</table>
+			</p>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			IEEE floating point extensions (FIX,EV6+)
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td colspan="2">12..11</td>
+		<td>10..9</td>
+		<td>8..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="16">010100</td>
+		<td rowspan="4" colspan="6" class="reserved"></td>
+		<td>0000</td>
+		<td rowspan="4" class="reserved"></td>
+		<td rowspan="4" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>0001</td>
+	</tr>
+	<tr>
+		<td>0010</td>
+	</tr>
+	<tr>
+		<td>0011</td>
+	</tr>
+	<tr>
+		<td>Ra</td>
+		<td>11111</td>
+		<td>trap</td>
+		<td colspan="2">round</td>
+		<td>size2</td>
+		<td>0100</td>
+		<td>Fc</td>
+		<td><span class="mnemonic">itof<span class="operand">size2</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Ra</span>,<span class="operand">Fc</span></span> <span class="ext ext-fix">FIX</span></td>
+	</tr>
+	<tr>
+		<td rowspan="6" colspan="6" class="reserved"></td>
+		<td>0101</td>
+		<td rowspan="6" class="reserved"></td>
+		<td rowspan="6" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>0110</td>
+	</tr>
+	<tr>
+		<td>0111</td>
+	</tr>
+	<tr>
+		<td>1000</td>
+	</tr>
+	<tr>
+		<td>1001</td>
+	</tr>
+	<tr>
+		<td>1010</td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Fb</td>
+		<td>trap</td>
+		<td colspan="2">round</td>
+		<td>size2</td>
+		<td>1011</td>
+		<td>Fc</td>
+		<td><span class="mnemonic">sqrt<span class="operand">size2</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span> <span class="ext ext-fix">FIX</span></td>
+	</tr>
+	<tr>
+		<td rowspan="5" colspan="6" class="reserved"></td>
+		<td>1100</td>
+		<td rowspan="5" class="reserved"></td>
+		<td rowspan="5" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>1101</td>
+	</tr>
+	<tr>
+		<td>1110</td>
+	</tr>
+	<tr>
+		<td>1111</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			IEEE floating point base (EV4+)
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td colspan="2">12..11</td>
+		<td>10..9</td>
+		<td>8..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="16">010110</td>
+		<td rowspan="8">Fa</td>
+		<td rowspan="8">Fb</td>
+		<td rowspan="8">trap</td>
+		<td rowspan="8" colspan="2">round</td>
+		<td rowspan="8">size</td>
+		<td>0000</td>
+		<td rowspan="8">Fc</td>
+		<td><span class="mnemonic">add<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0001</td>
+		<td><span class="mnemonic">sub<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0010</td>
+		<td><span class="mnemonic">mul<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0011</td>
+		<td><span class="mnemonic">div<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0100</td>
+		<td><span class="mnemonic">cmpxun<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0101</td>
+		<td><span class="mnemonic">cmpxeq<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0110</td>
+		<td><span class="mnemonic">cmpxlt<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0111</td>
+		<td><span class="mnemonic">cmpxle<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="6" rowspan="4" class="reserved"></td>
+		<td>1000</td>
+		<td rowspan="4" class="reserved"></td>
+		<td rowspan="4" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>1001</td>
+	</tr>
+	<tr>
+		<td>1010</td>
+	</tr>
+	<tr>
+		<td>1011</td>
+	</tr>
+	<tr>
+		<td rowspan="4">11111</td>
+		<td rowspan="4">Fb</td>
+		<td rowspan="4">trap</td>
+		<td rowspan="4" colspan="2">round</td>
+		<td rowspan="4">size</td>
+		<td>1100</td>
+		<td rowspan="4">Fc</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>s/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1101</td>
+		<td class="unsupported">unsupported</td>
+	</tr>
+	<tr>
+		<td>1110</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>t/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1111</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>q/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			<div class="group">
+			VAX floating point group
+			</div>
+			<p>
+				<table>
+					<tr>
+						<td>trap</td>
+						<td>Trapping mode</td>
+					</tr>
+					<tr>
+						<td>000</td>
+						<td>Imprecise (default)</td>
+					</tr>
+					<tr>
+						<td rowspan="2">001</td>
+						<td>Underflow enable (/u) (floating-point output)</td>
+					</tr>
+					<tr>
+						<td>Overflow enable (/v)  (integer output)</td>
+					</tr>
+					<tr>
+						<td>010</td>
+						<td rowspan="2">Unsupported</td>
+					</tr>
+					<tr>
+						<td>011</td>
+					</tr>
+					<tr>
+						<td>100</td>
+						<td>/s Exception completion enable</td>
+					</tr>
+					<tr>
+						<td rowspan="2">101</td>
+						<td>/su (floating-point output)</td>
+					</tr>
+					<tr>
+						<td>/sv (integer output)</td>
+					</tr>
+					<tr>
+						<td>110</td>
+						<td>Unsupported</td>
+					</tr>
+					<tr>
+						<td>111</td>
+						<td>Unsupported</td>
+					</tr>
+				</table>
+			</p>
+			<p>
+				<table>
+					<tr>
+						<td>round</td>
+						<td>Rounding mode</td>
+					</tr>
+					<tr>
+						<td>00</td>
+						<td>Chopped (/c)</td>
+					</tr>
+					<tr>
+						<td>01</td>
+						<td>Unpredictable</td>
+					</tr>
+					<tr>
+						<td>10</td>
+						<td>Normal (default)</td>
+					</tr>
+					<tr>
+						<td>11</td>
+						<td>Unpredictable</td>
+					</tr>
+				</table>
+			</p>
+			<p>
+			<table>
+				<tr>
+					<td>size</td>
+					<td>Data size (1)</td>
+					<td>Data size (2)</td>
+				</tr>
+				<tr>
+					<td>00</td>
+					<td>F_floating (f)</td>
+					<td>F_floating (f)</td>
+				</tr>
+				<tr>
+					<td>01</td>
+					<td>D_floating (d)</td>
+					<td>F_floating (f)</td>
+				</tr>
+				<tr>
+					<td>10</td>
+					<td>G_floating (g)</td>
+					<td>G_floating (g)</td>
+				</tr>
+				<tr>
+					<td>11</td>
+					<td>Q_fixed (q)</td>
+					<td>reserved</td>
+				</tr>
+			</table>
+			</p>
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td colspan="2">12..11</td>
+		<td>10..9</td>
+		<td>8..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="16">010101</td>
+		<td rowspan="4" colspan="6" class="reserved"></td>
+		<td>0000</td>
+		<td rowspan="4" class="reserved"></td>
+		<td rowspan="4" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>0001</td>
+	</tr>
+	<tr>
+		<td>0010</td>
+	</tr>
+	<tr>
+		<td>0011</td>
+	</tr>
+	<tr>
+		<td>Ra</td>
+		<td>11111</td>
+		<td>trap</td>
+		<td colspan="2">round</td>
+		<td>size2</td>
+		<td>0100</td>
+		<td>Fc</td>
+		<td><span class="mnemonic">itof<span class="operand">size2</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Ra</span>,<span class="operand">Fc</span></span> <span class="ext ext-fix">FIX</span></td>
+	</tr>
+	<tr>
+		<td rowspan="5" colspan="6" class="reserved"></td>
+		<td>0101</td>
+		<td rowspan="5" class="reserved"></td>
+		<td rowspan="5" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>0110</td>
+	</tr>
+	<tr>
+		<td>0111</td>
+	</tr>
+	<tr>
+		<td>1000</td>
+	</tr>
+	<tr>
+		<td>1001</td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Fb</td>
+		<td>trap</td>
+		<td colspan="2">round</td>
+		<td>size2</td>
+		<td>1010</td>
+		<td>Fc</td>
+		<td><span class="mnemonic">sqrt<span class="operand">size2</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span> <span class="ext ext-fix">FIX</span></td>
+	</tr>
+	<tr>
+		<td rowspan="5" colspan="6" class="reserved"></td>
+		<td>1011</td>
+		<td rowspan="5" class="reserved"></td>
+		<td rowspan="5" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>1100</td>
+	</tr>
+	<tr>
+		<td>1101</td>
+	</tr>
+	<tr>
+		<td>1110</td>
+	</tr>
+	<tr>
+		<td>1111</td>
+	</tr>
+	<tr>
+		<td rowspan="16">010101</td>
+		<td rowspan="8">Fa</td>
+		<td rowspan="8">Fb</td>
+		<td rowspan="8">trap</td>
+		<td rowspan="8" colspan="2">round</td>
+		<td rowspan="8">size</td>
+		<td>0000</td>
+		<td rowspan="8">Fc</td>
+		<td><span class="mnemonic">add<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0001</td>
+		<td><span class="mnemonic">sub<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>	</tr>
+	<tr>
+		<td>0010</td>
+		<td><span class="mnemonic">mul<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>	</tr>
+	<tr>
+		<td>0011</td>
+		<td><span class="mnemonic">div<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>	</tr>
+	<tr>
+		<td>0100</td>
+		<td><span class="mnemonic">cmpxun<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0101</td>
+		<td><span class="mnemonic">cmpxeq<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0110</td>
+		<td><span class="mnemonic">cmpxlt<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0111</td>
+		<td><span class="mnemonic">cmpxle<span class="operand">size</span>/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td colspan="6" rowspan="4" class="reserved"></td>
+		<td>1000</td>
+		<td rowspan="4" class="reserved"></td>
+		<td rowspan="4" class="reserved">reserved</td>
+	</tr>
+	<tr>
+		<td>1001</td>
+	</tr>
+	<tr>
+		<td>1010</td>
+	</tr>
+	<tr>
+		<td>1011</td>
+	</tr>
+	<tr>
+		<td rowspan="4">11111</td>
+		<td rowspan="4">Fb</td>
+		<td rowspan="4">trap</td>
+		<td rowspan="4" colspan="2">round</td>
+		<td rowspan="4">size</td>
+		<td>1100</td>
+		<td rowspan="4">Fc</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>f/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1101</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>d/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1110</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>g/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1111</td>
+		<td><span class="mnemonic">cvt<span class="operand">size</span>q/<span class="operand">round</span><span class="operand">trap</span> <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">VAX Floating-point support group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td colspan="2">12..11</td>
+		<td>10..9</td>
+		<td>8..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="16">010111</td>
+		<td rowspan="14">Fa</td>
+		<td rowspan="16">Fb</td>
+		<td rowspan="16">000</td>
+		<td rowspan="16" colspan="2">00</td>
+		<td rowspan="14">10</td>
+		<td>0000</td>
+		<td rowspan="16">Fc</td>
+		<td><span class="mnemonic">cpys <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0001</td>
+		<td><span class="mnemonic">cpysn <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0010</td>
+		<td><span class="mnemonic">cpyse <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0011</td>
+		<td class="reserved"></td>
+	</tr>
+	<tr>
+		<td>0100</td>
+		<td><span class="mnemonic">mt_fpcr <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0101</td>
+		<td><span class="mnemonic">mf_fpcr <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>0110</td>
+		<td class="reserved"></td>
+	</tr>
+	<tr>
+		<td>0111</td>
+		<td class="reserved"></td>
+	</tr>
+	<tr>
+		<td>1010</td>
+		<td><span class="mnemonic">fcmoveq <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1011</td>
+		<td><span class="mnemonic">fcmovne <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1100</td>
+		<td><span class="mnemonic">fcmoveq <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1101</td>
+		<td><span class="mnemonic">fcmovge <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1110</td>
+		<td><span class="mnemonic">fcmovle <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>1111</td>
+		<td><span class="mnemonic">fcmovgt <span class="operand">Fa</span>,<span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td rowspan="2">11111</td>
+		<td>01</td>
+		<td rowspan="2">0000</td>
+		<td><span class="mnemonic">cvtlq <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td><span class="mnemonic">cvtql <span class="operand">Fb</span>,<span class="operand">Fc</span></span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Memory trap / barrier / hint group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td>12</td>
+		<td colspan="3">11..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="12">011000</td>
+		<td>00000</td>
+		<td>00000</td>
+		<td>000</td>
+		<td>0</td>
+		<td colspan="3">0000000</td>
+		<td rowspan="12">00000</td>
+		<td><span class="mnemonic">trapb</span> / <span class="mnemonic">draint</span></td>
+
+	</tr>
+	<tr>
+		<td>00000</td>
+		<td>00000</td>
+		<td>000</td>
+		<td>0</td>
+		<td colspan="3">0100000</td>
+		<td><span class="mnemonic">excb</span></td>
+	</tr>
+	<tr>
+		<td>00000</td>
+		<td>00000</td>
+		<td>010</td>
+		<td>0</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">mb</span></td>
+	</tr>
+	<tr>
+		<td>00000</td>
+		<td>00000</td>
+		<td>010</td>
+		<td>0</td>
+		<td colspan="3">0100000</td>
+		<td><span class="mnemonic">wmb</span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Rb</td>
+		<td>100</td>
+		<td>0</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">fetch (<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Rb</td>
+		<td>101</td>
+		<td>0</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">fetch_m (<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>Ra</td>
+		<td>11111</td>
+		<td>110</td>
+		<td>0</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">rpcc <span class="operand">Ra</span></span></td>
+	</tr>
+	<tr>
+		<td>00000</td>
+		<td>Rb</td>
+		<td>111</td>
+		<td>0</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">rc <span class="operand">Rb</span></span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Rb</td>
+		<td>111</td>
+		<td>0</td>
+		<td colspan="3">1000000</td>
+		<td><span class="mnemonic">ecb (<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>00000</td>
+		<td>Rb</td>
+		<td>111</td>
+		<td>1</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">rs <span class="operand">Rb</span></span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Rb</td>
+		<td>111</td>
+		<td>1</td>
+		<td colspan="3">1000000</td>
+		<td><span class="mnemonic">wh64 (<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>11111</td>
+		<td>Rb</td>
+		<td>111</td>
+		<td>1</td>
+		<td colspan="3">1100000</td>
+		<td><span class="mnemonic">wh64en (<span class="operand">Rb</span>)</span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">PALcode group 19</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="2">15..8</td>
+		<td>7</td>
+		<td>6</td>
+		<td>5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011001</td>
+		<td colspan="8">lit</td>
+		<td>
+			<span class="mnemonic">pal19 <span class="operand">lit</span></span>
+		</td>
+	</tr>
+	<tr>
+		<td>011001</td>
+		<td>Ra</td>
+		<td>Rb=Ra</td>
+		<td colspan="2">00000000 (prh?)</td>
+		<td>p</td>
+		<td>a</td>
+		<td>i</td>
+		<td>prl</td>
+		<td>
+			<span class="mnemonic">hw_mfpr(/<span class="operand">p</span><span class="operand">a</span><span class="operand">i</span>) <span class="operand">Ra</span>,<span class="operand">prl</span></span> <span class="arch arch-ev4">EV4</span>
+		</td>
+	</tr>
+	<tr>
+		<td>011101</td>
+		<td>Ra</td>
+		<td>Rb=Ra</td>
+		<td colspan="6">index</td>
+		<td>
+			<span class="mnemonic">hw_mfpr <span class="operand">Ra</span>,<span class="operand">index</span></span> <span class="arch arch-ev5">EV5</span>
+		</td>
+	</tr>
+	<tr>
+		<td>011001</td>
+		<td>Ra</td>
+		<td>11111</td>
+		<td colspan="2">index</td>
+		<td colspan="4">scbd_mask</td>
+		<td>
+			<span class="mnemonic">hw_mfpr <span class="operand">Ra</span>,<span class="operand">index</span>(<span class="operand">scbd_mask</span>)</span> <span class="arch arch-ev68c">EV68C</span>
+		</td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Unconditional jump</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..14</td>
+		<td colspan="5">13..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="4">011010</td>
+		<td rowspan="4">Ra</td>
+		<td rowspan="4">Rb</td>
+		<td>00</td>
+		<td colspan="5" rowspan="4">disp</td>
+		<td><span class="mnemonic">jmp <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+	</tr>
+	<tr>
+		<td>01</td>
+		<td><span class="mnemonic">jsr <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+	</tr>
+	<tr>
+		<td>10</td>
+		<td><span class="mnemonic">ret <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td>
+			<span class="mnemonic">jsr_coroutine <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+		</td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">PALcode group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="3">15..13</td>
+		<td>12</td>
+		<td colspan="2">11..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011011</td>
+		<td colspan="8">lit</td>
+		<td>
+			<span class="mnemonic">pal1b <span class="operand">lit</span></span>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			<p>EV4 hw_ld</p>
+			<table>
+				<thead>
+					<tr>
+						<td>type</td>
+						<td>Mnemonic</td>
+						<td>Description</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>000</td>
+						<td>(none)</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>001</td>
+						<td>/r</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>010</td>
+						<td>/a</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>011</td>
+						<td>/ar</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>100</td>
+						<td>/p</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>101</td>
+						<td>/pr</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>110</td>
+						<td>/pa</td>
+						<td>?</td>
+					</tr>
+					<tr>
+						<td>111</td>
+						<td>/par</td>
+						<td>?</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				<table>
+					<thead>
+						<tr>
+							<td>type</td>
+							<td>Mnemonic</td>
+							<td>Description</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>0</td>
+							<td>l</td>
+							<td>long-word access (32-bit)</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>q</td>
+							<td>quad-word access (64-bit)</td>
+						</tr>
+					</tbody>
+				</table>
+			</p>
+		</td>
+	</tr>
+	<tr>
+		<td>011011</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td colspan="3">type</td>
+		<td>size</td>
+		<td colspan="2">disp</td>
+		<td>
+			<span class="mnemonic">hw_ld<span class="operand">size</span><span class="operand">type</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+			<span class="arch arch-ev4">EV4</span>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			<table>
+				<thead>
+					<tr>
+						<td colspan="5">EV5 hw_ld field definitions</td>
+					</tr>
+					<tr>
+						<td>Bit</td>
+						<td>Name</td>
+						<td>Value</td>
+						<td>Mnemonic</td>
+						<td>Description</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="2">15</td>
+						<td rowspan="2">phys</td>
+						<td>0</td>
+						<td>(none)</td>
+						<td>virtual address</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>/p</td>
+						<td>physical address</td>
+					</tr>
+					<tr>
+						<td rowspan="2">14</td>
+						<td rowspan="2">alt</td>
+						<td>0</td>
+						<td>(none)</td>
+						<td>Memory access checks use MTU IPR DTB_CM</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>/a</td>
+						<td>Memory access checks use MTU IPR ALT_MODE</td>
+					</tr>
+					<tr>
+						<td rowspan="2">13</td>
+						<td rowspan="2">wrtck</td>
+						<td>0</td>
+						<td>(none)</td>
+						<td>Memory access checks use MTU IPR DTB_CM</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>/w</td>
+						<td>Memory access checks FOR and FOW</td>
+					</tr>
+					<tr>
+						<td rowspan="2">12</td>
+						<td rowspan="2">quad</td>
+						<td>0</td>
+						<td>l</td>
+						<td>Length is long-word</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>q</td>
+						<td>Length is quad-word</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="2">15..13</td>
+		<td>12</td>
+		<td>11</td>
+		<td>10</td>
+		<td>9..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011011</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td colspan="2">type</td>
+		<td>quad</td>
+		<td>vpte</td>
+		<td>lock</td>
+		<td>disp</td>
+		<td>
+			<span class="mnemonic">hw_ld<span class="operand">quad</span><span class="operand">type</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+			<span class="arch arch-ev5">EV5</span>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			<table>
+				<thead>
+					<tr>
+						<td colspan="5">EV68C hw_ld field definitions</td>
+					</tr>
+					<tr>
+						<td>Bit</td>
+						<td>Name</td>
+						<td>Value</td>
+						<td>Mnemonic</td>
+						<td>Description</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="8">15..13</td>
+						<td rowspan="8">type</td>
+						<td>000</td>
+						<td>/p</td>
+						<td>Physical address</td>
+					</tr>
+					<tr>
+						<td>001</td>
+						<td>_l/p</td>
+						<td>Physical address with lock</td>
+					</tr>
+					<tr>
+						<td>010</td>
+						<td>/v</td>
+						<td>Virtual / VPTE access</td>
+					</tr>
+					<tr>
+						<td>011</td>
+						<td>-</td>
+						<td>Undefined</td>
+					</tr>
+					<tr>
+						<td>100</td>
+						<td>(none)</td>
+						<td>Virtual / VPTE access</td>
+					</tr>
+					<tr>
+						<td>101</td>
+						<td>/w</td>
+						<td>Virtual with WrChk</td>
+					</tr>
+					<tr>
+						<td>110</td>
+						<td>/a</td>
+						<td>Virtual with alternate access</td>
+					</tr>
+					<tr>
+						<td>111</td>
+						<td>/wa</td>
+						<td>Virtual with WrChk and alternate access</td>
+					</tr>
+					<tr>
+						<td rowspan="2">12</td>
+						<td rowspan="2">quad</td>
+						<td>0</td>
+						<td>l</td>
+						<td>Length is long-word</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>q</td>
+						<td>Length is quad-word</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="3">15..13</td>
+		<td>12</td>
+		<td colspan="2">11..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011011</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td colspan="3">type</td>
+		<td>quad</td>
+		<td colspan="2">disp</td>
+		<td>
+			<span class="mnemonic">hw_ld<span class="operand">quad</span><span class="operand">type</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+			<span class="arch arch-ev68c">EV68C</span>
+		</td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Instruction set extensions</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..13</td>
+		<td>12</td>
+		<td colspan="3">11..5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td rowspan="20">011100</td>
+		<td rowspan="2">11111</td>
+		<td rowspan="18">Rb</td>
+		<td rowspan="20">000</td>
+		<td rowspan="20">0</td>
+		<td colspan="3">0000000</td>
+		<td rowspan="20">Rc</td>
+		<td><span class="mnemonic">sextb <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-bwx">BWX</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0000001</td>
+		<td><span class="mnemonic">sextw <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-bwx">BWX</span></td>
+	</tr>
+	<tr>
+		<td rowspan="9">Ra</td>
+		<td rolspan="9" colspan="3">0110001</td>
+		<td><span class="mnemonic">perr <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111000</td>
+		<td><span class="mnemonic">minsb8 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111001</td>
+		<td><span class="mnemonic">minsw4 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111010</td>
+		<td><span class="mnemonic">minub8 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111011</td>
+		<td><span class="mnemonic">minuw4 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111100</td>
+		<td><span class="mnemonic">maxub8 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111101</td>
+		<td><span class="mnemonic">maxuw4 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111110</td>
+		<td><span class="mnemonic">maxsb8 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0111111</td>
+		<td><span class="mnemonic">maxsw4 <span class="operand">Ra</span>,<span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td rowspan="7">11111</td>
+		<td colspan="3">0110000</td>
+		<td><span class="mnemonic">ctpop <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-cix">CIX</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110010</td>
+		<td><span class="mnemonic">ctlz <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-cix">CIX</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110011</td>
+		<td><span class="mnemonic">cttz <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-cix">CIX</span></td>
+	</tr>
+	<tr>
+		<td rolspan="4" colspan="3">0110100</td>
+		<td><span class="mnemonic">unpkbw <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110101</td>
+		<td><span class="mnemonic">unpkbl <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110110</td>
+		<td><span class="mnemonic">pkwb <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0110111</td>
+		<td><span class="mnemonic">pklb <span class="operand">Rb</span>,<span class="operand">Rc</span></span> <span class="ext ext-mvi">MVI</span></td>
+	</tr>
+	<tr>
+		<td rowspan="2">Fa</td>
+		<td rowspan="2">11111</td>
+		<td colspan="3">0000000</td>
+		<td><span class="mnemonic">ftoit <span class="operand">Fa</span>,<span class="operand">Rc</span></span> <span class="ext ext-fix">FIX</span></td>
+	</tr>
+	<tr>
+		<td colspan="3">0001000</td>
+		<td><span class="mnemonic">ftois <span class="operand">Fa</span>,<span class="operand">Rc</span></span> <span class="ext ext-fix">FIX</span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">PALcode group 1d</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="2">15..8</td>
+		<td>7</td>
+		<td>6</td>
+		<td>5</td>
+		<td>4..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011101</td>
+		<td colspan="8">lit</td>
+		<td>
+			<span class="mnemonic">pal1d <span class="operand">lit</span></span>
+		</td>
+	</tr>
+	<tr>
+		<td>011101</td>
+		<td>Ra</td>
+		<td>Rb=Ra</td>
+		<td colspan="6">index</td>
+		<td>
+			<span class="mnemonic">hw_mtpr <span class="operand">Ra</span>,<span class="operand">index</span></span> <span class="arch arch-ev5">EV5</span>
+		</td>
+	</tr>
+	<tr>
+		<td>011101</td>
+		<td>11111</td>
+		<td>Rb</td>
+		<td colspan="2">index</td>
+		<td colspan="4">scbd_mask</td>
+		<td>
+			<span class="mnemonic">hw_mtpr <span class="operand">Rb</span>,<span class="operand">index</span>(<span class="operand">scbd_mask</span>)</span> <span class="arch arch-ev68c">EV68C</span>
+		</td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">PALcode group 1e</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..14</td>
+		<td>13</td>
+		<td colspan="4">12..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011110</td>
+		<td colspan="8">lit</td>
+		<td>
+			<span class="mnemonic">pal1e <span class="operand">lit</span></span>
+		</td>
+	</tr>
+	<tr>
+		<td rowspan="2">011110</td>
+		<td rowspan="2">Ra</td>
+		<td rowspan="2">Rb</td>
+		<td>10</td>
+		<td colspan="5" rowspan="2">00000000000000</td>
+		<td><span class="mnemonic">hw_rei <span class="operand">Ra</span>,(<span class="operand">Rb</span>)</span><span class="arch arch-ev5">EV5</span>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td><span class="mnemonic">hw_rei_stall <span class="operand">Ra</span>,(<span class="operand">Rb</span>)</span><span class="arch arch-ev5">EV5</span>
+	</tr>
+	<tr>
+		<td rowspan="4">011110</td>
+		<td rowspan="4">Ra</td>
+		<td rowspan="4">Rb</td>
+		<td>00</td>
+		<td rowspan="4">stall</td>
+		<td colspan="4" rowspan="4">disp</td>
+		<td><span class="mnemonic">hw_jmp/<span class="operand">stall</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span><span class="arch arch-ev68c">EV68C</span>
+	</tr>
+	<tr>
+		<td>01</td>
+		<td><span class="mnemonic">hw_jsr/<span class="operand">stall</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span><span class="arch arch-ev68c">EV68C</span>
+	</tr>
+	<tr>
+		<td>10</td>
+		<td><span class="mnemonic">hw_ret/<span class="operand">stall</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span><span class="arch arch-ev68c">EV68C</span>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td>
+			<span class="mnemonic">hw_coroutine/<span class="operand">stall</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span><span class="arch arch-ev68c">EV68C</span>
+		</td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">PALcode group 1f</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="3">15..13</td>
+		<td>12</td>
+		<td colspan="2">11..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011111</td>
+		<td colspan="8">lit</td>
+		<td>
+			<span class="mnemonic">pal1f <span class="operand">lit</span></span>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			<table>
+				<thead>
+					<tr>
+						<td colspan="5">EV5 hw_st field definitions</td>
+					</tr>
+					<tr>
+						<td>Bit</td>
+						<td>Name</td>
+						<td>Value</td>
+						<td>Mnemonic</td>
+						<td>Description</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="2">15</td>
+						<td rowspan="2">phys</td>
+						<td>0</td>
+						<td></td>
+						<td>virtual address</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>/p</td>
+						<td>physical address</td>
+					</tr>
+					<tr>
+						<td rowspan="2">14</td>
+						<td rowspan="2">alt</td>
+						<td>0</td>
+						<td></td>
+						<td>Memory access checks use MTU IPR DTB_CM</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>/a</td>
+						<td>Memory access checks use MTU IPR ALT_MODE</td>
+					</tr>
+					<tr>
+						<td>13</td>
+						<td>MBZ</td>
+						<td>0</td>
+						<td></td>
+						<td>Must be zero</td>
+					</tr>
+					<tr>
+						<td rowspan="2">12</td>
+						<td rowspan="2">quad</td>
+						<td>0</td>
+						<td>l</td>
+						<td>Length is long-word</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>q</td>
+						<td>Length is quad-word</td>
+					</tr>
+					<tr>
+						<td>11</td>
+						<td>MBZ</td>
+						<td>0</td>
+						<td></td>
+						<td>Must be zero</td>
+					</tr>
+					<tr>
+						<td rowspan="2">10</td>
+						<td rowspan="2">cond</td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>_c</td>
+						<td>Conditional store - Ra written with LOCK_FLAG</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td>15..14</td>
+		<td>13</td>
+		<td>12</td>
+		<td>11</td>
+		<td>10</td>
+		<td>9..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011111</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td>type</td>
+		<td>0</td>
+		<td>quad</td>
+		<td>0</td>
+		<td>cond</td>
+		<td>disp</td>
+		<td>
+			<span class="mnemonic">hw_st<span class="operand">quad</span><span class="operand">cond</span><span class="operand">type</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+			<span class="arch arch-ev5">EV5</span>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">
+			<table>
+				<thead>
+					<tr>
+						<td colspan="5">EV68C hw_st field definitions</td>
+					</tr>
+					<tr>
+						<td>Bit</td>
+						<td>Name</td>
+						<td>Value</td>
+						<td>Mnemonic</td>
+						<td>Description</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="8">15..13</td>
+						<td rowspan="8">type</td>
+						<td>000</td>
+						<td>/p</td>
+						<td>Physical address</td>
+					</tr>
+					<tr>
+						<td>001</td>
+						<td>_c/p</td>
+						<td>Phsyical address conditional store</td>
+					</tr>
+					<tr>
+						<td>010</td>
+						<td></td>
+						<td>Virtual address</td>
+					</tr>
+					<tr>
+						<td>011</td>
+						<td colspan="2" rowspan="3">Unsupported</td>
+					</tr>
+					<tr>
+						<td>100</td>
+					</tr>
+					<tr>
+						<td>101</td>
+					</tr>
+					<tr>
+						<td>110</td>
+						<td>/a</td>
+						<td>Virtual address with alternate access (DTB_ALT_MODE IPR)</td>
+					</tr>
+					<tr>
+						<td>111</td>
+						<td colspan="2">Unsupported</td>
+					</tr>
+					<tr>
+						<td rowspan="2">12</td>
+						<td rowspan="2">quad</td>
+						<td>0</td>
+						<td>l</td>
+						<td>Length is long-word</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>q</td>
+						<td>Length is quad-word</td>
+					</tr>
+				</tbody>
+			</table>
+		</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="2">15..13</td>
+		<td>12</td>
+		<td colspan="3">11..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>011111</td>
+		<td>Ra</td>
+		<td>Rb</td>
+		<td colspan="2">type</td>
+		<td>quad</td>
+		<td colspan="3">disp</td>
+		<td>
+			<span class="mnemonic">hw_st<span class="operand">quad</span><span class="operand">type</span> <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span>
+			<span class="arch arch-ev68c">EV68C</span>
+		</td>
+	</tr>
+	<tr class="group">
+		<td colspan="10">Floating-point load / store group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="6">15..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>100000</td>
+		<td rowspan="8">Fa</td>
+		<td rowspan="8">Rb</td>
+		<td rowspan="8" colspan="6">disp</td>
+		<td><span class="mnemonic">ldf <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100001</td>
+		<td><span class="mnemonic">ldg <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100010</td>
+		<td><span class="mnemonic">lds <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100011</td>
+		<td><span class="mnemonic">ldt <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100100</td>
+		<td><span class="mnemonic">stf <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100101</td>
+		<td><span class="mnemonic">stg <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100110</td>
+		<td><span class="mnemonic">sts <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>100111</td>
+		<td><span class="mnemonic">stt <span class="operand">Fa</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Integer load / store group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td>20..16</td>
+		<td colspan="6">15..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>101000</td>
+		<td rowspan="8">Ra</td>
+		<td rowspan="8">Rb</td>
+		<td rowspan="8" colspan="6">disp</td>
+		<td><span class="mnemonic">ldl <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101001</td>
+		<td><span class="mnemonic">ldq <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101010</td>
+		<td><span class="mnemonic">ldl_l <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101011</td>
+		<td><span class="mnemonic">ldq_l <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101100</td>
+		<td><span class="mnemonic">stl <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101101</td>
+		<td><span class="mnemonic">stq <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101110</td>
+		<td><span class="mnemonic">stl_c <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+	<tr>
+		<td>101111</td>
+		<td><span class="mnemonic">stq_c <span class="operand">Ra</span>,<span class="operand">disp</span>(<span class="operand">Rb</span>)</span></td>
+	</tr>
+
+	<tr class="group">
+		<td colspan="10">Branch group</td>
+	</tr>
+	<tr class="group">
+		<td>31..26</td>
+		<td>25..21</td>
+		<td colspan="7">20..0</td>
+		<td>Instruction</td>
+	</tr>
+	<tr>
+		<td>110000</td>
+		<td rowspan="16">Ra</td>
+		<td rowspan="16" colspan="7">disp</td>
+		<td><span class="mnemonic">br <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110001</td>
+		<td><span class="mnemonic">fbeq <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110010</td>
+		<td><span class="mnemonic">fblt <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110011</td>
+		<td><span class="mnemonic">fble <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110100</td>
+		<td><span class="mnemonic">bsr <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110101</td>
+		<td><span class="mnemonic">fbne <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110110</td>
+		<td><span class="mnemonic">fbge <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>110111</td>
+		<td><span class="mnemonic">fbgt <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111000</td>
+		<td><span class="mnemonic">blbc <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111001</td>
+		<td><span class="mnemonic">beq <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111010</td>
+		<td><span class="mnemonic">blt <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111011</td>
+		<td><span class="mnemonic">ble <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111100</td>
+		<td><span class="mnemonic">blbs <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111101</td>
+		<td><span class="mnemonic">bne <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111110</td>
+		<td><span class="mnemonic">bge <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+	<tr>
+		<td>111111</td>
+		<td><span class="mnemonic">bgt <span class="operand">Ra</span>,<span class="operand">disp</span></span></td>
+	</tr>
+</table>
+
+<h3>Instruction aliases / macros</h3>
+
+<table>
+	<thead>
+		<tr>
+			<td>Virtual</td>
+			<td>Real</td>
+		</tr>
+	</thead>
+	<tr>
+		<td>andnot Rx,Ry,Rz</td>
+		<td>bic Rx,Ry,Rz</d>
+	</tr>
+	<tr>
+		<td>br target</td>
+		<td>br R31,target</td>
+	</tr>
+	<tr>
+		<td>clr Rx</td>
+		<td>bis R31,R31,Rx</td>
+	</tr>
+	<tr>
+		<td>divl Rx,Ry,Rz</td>
+		<td>
+			mov  Rx,t10<br/>
+			mov  Ry,t11<br/>
+			ldq  t12,__divl(gp)!literal!1<br/>
+			jsr  t9,(t12),__divl!lituse_jsr!1<br/>
+			ldah gp,0(t9)!gpdisp!2<br/>
+			lda  gp,0(gp)!gpdisp!2<br/>
+			mov  t12,Rz<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>divq Rx,Ry,Rz</td>
+		<td>
+			mov  Rx,t10<br/>
+			mov  Ry,t11<br/>
+			ldq  t12,__divq(gp)!literal!1<br/>
+			jsr  t9,(t12),__divq!lituse_jsr!1<br/>
+			ldah gp,0(t9)!gpdisp!2<br/>
+			lda  gp,0(gp)!gpdisp!2<br/>
+			mov  t12,Rz<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>fabs Fx,Fy</td>
+		<td>cpys F31,Fx,Fy</td>
+	</tr>
+	<tr>
+		<td>fclr Fx</td>
+		<td>cpys F31,F31,Fx</td>
+	</tr>
+	<tr>
+		<td>fmov Fx,Fy</td>
+		<td>cpys Fx,Fx,Fy</td>
+	</tr>
+	<tr>
+		<td>fneg Fx,Fy</td>
+		<td>cpysn Fx,Fy,Fy</td>
+	</tr>
+	<tr>
+		<td>fnop</td>
+		<td>cpys F31,F31,F31</td>
+	</tr>
+	<tr>
+		<td>
+			ldb Rx,y<br/>
+			(before ev56)
+		</td>
+		<td>
+			lda   at,y<br/>
+			ldq_u Rx,0(at)<br/>
+			extbl Rx,at,Rx<br/>
+			sll   Rx,0x38,Rx<br/>
+			sra   Rx,0x38,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			ldb Rx,y<br/>
+			(ev56 and later)
+		</td>
+		<td>
+			ldbu  Rx,y<br/>
+			sextb Rx,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			ldbu Rx,y<br/>
+			(before ev56)
+		</td>
+		<td>
+			lda   at,y<br/>
+			ldq_u Rx,0(at)<br/>
+			extbl Rx,at,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>ldgp gp,y</td>
+		<td>
+			ldah gp,y<br/>
+			lda  gp,0(gp)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>ldil Rx,lit32</td>
+		<td>
+			ldah Rx,lowword(lit32)<br/>
+			lda  Rx,highword(lit32)(Rx)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			ldw Rx,y<br/>
+			(before ev56)
+		</td>
+		<td>
+			lda   at,y<br/>
+			ldq_u Rx,0(at)<br/>
+			extwl Rx,at,Rx<br/>
+			sll   Rx,0x30,Rx<br/>
+			sra   Rx,0x30,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			ldw Rx,y<br/>
+			(ev56 and later)
+		</td>
+		<td>
+			ldwu Rx,y<br/>
+			sextw Rx,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			ldwu Rx,y<br/>
+			(before ev56)
+		</td>
+		<td>
+			ldq   at,y<br/>
+			ldq_u Rx,0(at)<br/>
+			extwl Rx,at,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>mov Rx,Ry</td>
+		<td>bis Rx,Rx,Ry</d>
+	</tr>
+	<tr>
+		<td>mov Rx/Lit(8),Ry</td>
+		<td>bis R31,Rx/Lit,Ry</td>
+	</tr>
+	<tr>
+		<td>mov Lit(16),Rx</td>
+		<td>lda Rx,lit(R31)</td>
+	</tr>
+	<tr>
+		<td>mt_fpcr Fx</td>
+		<td>mt_fpcr Fx,Fx,Fx</td>
+	</tr>
+	<tr>
+		<td>mf_fpcr Fx</td>
+		<td>mf_fpcr Fx,Fx,Fx</td>
+	</tr>
+	<tr>
+		<td>negf Fx,Fy</td>
+		<td>subf F31,Fx,Fy</td>
+	</tr>
+	<tr>
+		<td>negf/s Fx,Fy</td>
+		<td>subf/s F31,Fx,Fy</td>
+	</tr>
+	<tr>
+		<td>negg Fx,Fy</td>
+		<td>subg F31,Fx,Fy</td>
+	</tr>
+	<tr>
+		<td>negg/s Fx,Fy</td>
+		<td>subg/s F31,Fx,Fy</td>
+	</tr>
+	<tr>
+		<td>nop</td>
+		<td>bis R31,R31,R31</td>
+	</tr>
+	<tr>
+		<td>not Rx,Ry</td>
+		<td>ornot R31,Rx,Ry</d>
+	</tr>
+	<tr>
+		<td>or Rx,Ry,Rz</td>
+		<td>bis Rx,Ry,Rz</d>
+	</tr>
+	<tr>
+		<td>prefetch</td>
+		<td>ldl R31,disp(Rb)</td>
+	</tr>
+	<tr>
+		<td>prefetch_en</td>
+		<td>ldq R31,disp(Rb)</td>
+	</tr>
+	<tr>
+		<td>prefetch_m</td>
+		<td>lds F31,disp(Rb)</td>
+	</tr>
+	<tr>
+		<td>prefetch_men</td>
+		<td>ldt F31,disp(Rb)</td>
+	</tr>
+	<tr>
+		<td>reml Rx,Ry,Rz</td>
+		<td>
+			mov  Rx,t10<br/>
+			mov  Ry,t11<br/>
+			ldq  t12,__reml(gp)!literal!1<br/>
+			jsr  t9,(t12),__reml!lituse_jsr!1<br/>
+			ldah gp,0(t9)!gpdisp!2<br/>
+			lda  gp,0(gp)!gpdisp!2<br/>
+			mov  t12,Rz<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>remq Rx,Ry,Rz</td>
+		<td>
+			mov  Rx,t10<br/>
+			mov  Ry,t11<br/>
+			ldq  t12,__remq(gp)!literal!1<br/>
+			jsr  t9,(t12),__remq!lituse_jsr!1<br/>
+			ldah gp,0(t9)!gpdisp!2<br/>
+			lda  gp,0(gp)!gpdisp!2<br/>
+			mov  t12,Rz<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>sextl Fx,Fy</td>
+		<td>addl F31,Fx,Fy</d>
+	</tr>
+	<tr>
+		<td>
+			stb Rx,Ry<br>
+			(before ev56)
+		</td>
+		<td>
+			lda   at,Ry<br/>
+			ldq_u t9,0(at)<br/>
+			insbl Rx,at,t10<br/>
+			mskbl t9,at,t9<br/>
+			or    t9,t10,t9<br/>
+			stq_u t9,0(at)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			stw Rx,Ry<br>
+			(before ev56)
+		</td>
+		<td>
+			lda   at,Ry<br/>
+			ldq_u t9,0(at)<br/>
+			inswl Rx,at,t10<br/>
+			mskwl t9,at,t9<br/>
+			or    t9,t10,t9<br/>
+			stq_u t9,0(at)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>uldl Rx,y</td>
+		<td>
+			ldq   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,3(at)<br/>
+			extll t9,at,t9<br/>
+			extlh t10,at,t10<br/>
+			or    t9,t10,Rx<br/>
+			sextl Rx,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>uldq Rx,y</td>
+		<td>
+			ldq   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,7(at)<br/>
+			extql t9,at,t9<br/>
+			extqh t10,at,t10<br/>
+			or    t9,t10,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			uldw Rx,y<br/>
+			(before ev56)
+		</td>
+		<td>
+			lda   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,1(at)<br/>
+			extwl t9,at,t9<br/>
+			extwh t10,at,t10<br/>
+			or    t9,t10,Rx<br/>
+			sll   Rx,0x30,Rx<br/>
+			sra   Rx,0x30,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			uldw Rx,y<br/>
+			(ev56 and later)
+		</td>
+		<td>
+			lda   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,1(at)<br/>
+			extwl t9,at,t9<br/>
+			extwh t10,at,t10<br/>
+			or    t9,t10,Rx<br/>
+			sextw Rx,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>uldwu Rx,y</td>
+		<td>
+			ldq   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,1(at)<br/>
+			extwl t9,at,t9<br/>
+			extwh t10,at,t10<br/>
+			or    t9,t10,Rx<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>unop</td>
+		<td>ldq_u R31,0(Rx)</td>
+	</tr>
+	<tr>
+		<td>ustl Rx,y</td>
+		<td>
+			ldq   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,3(at)<br/>
+			insll Rx,at,t11<br/>
+			inslh Rx,at,t12<br/>
+			mskll t9,at,t9<br/>
+			msklh t10,at,t10<br/>
+			or    t9,t11,t9<br/>
+			or    t10,t12,t10<br/>
+			stq_u t10,3(at)<br/>
+			stq_u t9,0(at)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>ustq Rx,y</td>
+		<td>
+			ldq   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,7(at)<br/>
+			insql Rx,at,t11<br/>
+			insqh Rx,at,t12<br/>
+			mskql t9,at,t9<br/>
+			mskqh t10,at,t10<br/>
+			or    t9,t11,t9<br/>
+			or    t10,t12,t10<br/>
+			stq_u t10,7(at)<br/>
+			stq_u t9,0(at)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>ustw Rx,y</td>
+		<td>
+			lda   at,y<br/>
+			ldq_u t9,0(at)<br/>
+			ldq_u t10,1(at)<br/>
+			inswl Rx,at,t11<br/>
+			inswh Rx,at,t12<br/>
+			mskwl t9,at,t9<br/>
+			mskwh t10,at,t10<br/>
+			or    t9,t11,t9<br/>
+			or    t10,t12,t10<br/>
+			stq_u t10,1(at)<br/>
+			stq_u t9,0(at)<br/>
+		</td>
+	</tr>
+	<tr>
+		<td>xornot Rx,Ry,Rz</td>
+		<td>eqv Rx,Ry,Rz</d>
+	</tr>
+</table>
+
+<h3>PALcode Entry Points (21064,21064A,21066,21066A,and 21068)</h3>
+
+<table>
+	<thead>
+		<tr>
+			<td>PAL_BASE offset</td>
+			<td>Trigger</td>
+			<td>Description</td>
+		</tr>
+	</thead>
+	<tr>
+		<td>0x0000</td>
+		<td rowspan="12">hardware</td>
+		<td>reset entry point</td>
+	</tr>
+	<tr>
+		<td>0x0020</td>
+		<td>machine check</td>
+	</tr>
+	<tr>
+		<td>0x0060</td>
+		<td>arithmetic exception</td>
+	</tr>
+	<tr>
+		<td>0x00e0</td>
+		<td>interrupt</td>
+	</tr>
+	<tr>
+		<td>0x01e0</td>
+		<td>data stream error</td>
+	</tr>
+	<tr>
+		<td>0x03e0</td>
+		<td>instruction translation buffer miss</td>
+	</tr>
+	<tr>
+		<td>0x07e0</td>
+		<td>Istream access violation</td>
+	</tr>
+	<tr>
+		<td>0x08e0</td>
+		<td>DTB miss native mode</td>
+	</tr>
+	<tr>
+		<td>0x09e0</td>
+		<td>DTB miss PALmode</td>
+	</tr>
+	<tr>
+		<td>0x11e0</td>
+		<td>Unalign errors</td>
+	</tr>
+	<tr>
+		<td>0x13e0</td>
+		<td>reserved / privileged opcode</td>
+	</tr>
+	<tr>
+		<td>0x17e0</td>
+		<td>floating-point error</td>
+	</tr>
+	<tr>
+		<td>0x2000</td>
+		<td rowspan="2">software</td>
+		<td>privileged call_pal entry points</td>
+	</tr>
+	<tr>
+		<td>0x3000</td>
+		<td>unprivileged call_pal entry points</td>
+	</tr>
+</table>
+
+<h3>PALcode Entry Points (21164)</h3>
+
+<table>
+	<thead>
+		<tr>
+			<td>PAL_BASE offset</td>
+			<td>Trigger</td>
+			<td>Description</td>
+		</tr>
+	</thead>
+	<tr>
+		<td>0x0000</td>
+		<td rowspan="12">hardware</td>
+		<td>reset entry point</td>
+	</tr>
+	<tr>
+		<td>0x0080</td>
+		<td>Istream access violation</td>
+	</tr>
+	<tr>
+		<td>0x0100</td>
+		<td>interrupt</td>
+	</tr>
+	<tr>
+		<td>0x0180</td>
+		<td>instruction translation buffer miss</td>
+	</tr>
+	<tr>
+		<td>0x0200</td>
+		<td>single Dstream translation buffer miss</td>
+	</tr>
+	<tr>
+		<td>0x0280</td>
+		<td>double Dstream translation buffer miss</td>
+	</tr>
+	<tr>
+		<td>0x0300</td>
+		<td>Unaligned memory access</td>
+	</tr>
+	<tr>
+		<td>0x0380</td>
+		<td>Data stream error</td>
+	</tr>
+	<tr>
+		<td>0x0400</td>
+		<td>Machine check</td>
+	</tr>
+	<tr>
+		<td>0x0480</td>
+		<td>Reserved / prvileged opcode</td>
+	</tr>
+	<tr>
+		<td>0x0500</td>
+		<td>Arithmetic exception</td>
+	</tr>
+	<tr>
+		<td>0x0580</td>
+		<td>Floating-point error</td>
+	</tr>
+	<tr>
+		<td>0x2000</td>
+		<td rowspan="2">software</td>
+		<td>privileged call_pal entry points</td>
+	</tr>
+	<tr>
+		<td>0x3000</td>
+		<td>unprivileged call_pal entry points</td>
+	</tr>
+</table>
+
+<h3>call_pal entry points</h3>
+
+<p>
+<table>
+	<thead>
+		<tr>
+			<td>Mnemonic</td>
+			<td>Description</td>
+		</tr>
+	</thead>
+	<tr>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>DEC OpenVMS</td>
+	</tr>
+	<tr>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>DEC Digital UNIX, DEC OSF/1, HP Tru64 UNIX, GNU/Linux</td>
+	</tr>
+	<tr>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Microsoft Windows NT AXP</td>
+	</tr>
+</table>
+</p>
+
+<table>
+	<thead>
+		<tr>
+			<td>index</td>
+			<td>Name</td>
+			<td>Specification</td>
+			<td>Description</td>
+		</tr>
+	</thead>
+	<tr>
+		<td>0x00</td>
+		<td>halt</td>
+		<td><span class="abi abi-openvms">OpenVMS</span><span class="abi abi-osf1">OSF/1</span><span class="abi abi-winnt">WinNT</span></td>
+		<td>Halt processor, return to SRM control (power-down or enter console)</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x01</td>
+		<td>cflush</td>
+		<td><span class="abi abi-openvms">OpenVMS</span><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Flush cache</td>
+	</tr>
+	<tr>
+		<td>restart</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>0x02</td>
+		<td>draina</td>
+		<td><span class="abi abi-openvms">OpenVMS</span><span class="abi abi-osf1">OSF/1</span><span class="abi abi-winnt">WinNT</span></td>
+		<td>Drain aborts</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x03</td>
+		<td>ldqp</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Load quadword physical</td>
+	</tr>
+	<tr>
+		<td>reboot</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x04</td>
+		<td>stqp</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Store quadword physical</td>
+	</tr>
+	<tr>
+		<td>initpal</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Initialize PALcode</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x06</td>
+		<td>mfpr_asn</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Move from processor register ASN</td>
+	</tr>
+	<tr>
+		<td>swpirql</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Swap IRQL</td>
+	</tr>
+	<tr>
+		<td>0x07</td>
+		<td>mfpr_esp</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Move from processor register ESP</td>
+	</tr>
+	<tr>
+		<td>0x08</td>
+		<td>di</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Disable interrupts</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x09</td>
+		<td>cserve</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Console service</td>
+	</tr>
+	<tr>
+		<td>ei</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Enable interrupts</td>
+	</tr>
+	<tr>
+		<td>0x0a</td>
+		<td>swppal</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Swap PALcode image</td>
+	</tr>
+	<tr>
+		<td>0x0d</td>
+		<td>wripir</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write interprocessor interrupt request</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x10</td>
+		<td>rdmces</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Read machine check error summary register</td>
+	</tr>
+	<tr>
+		<td>swpctx</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Swap privileged thread context</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x11</td>
+		<td>wrmces</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write machine check error summary register</td>
+	</tr>
+	<tr>
+		<td>swpprocess</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Swap privileged process context</td>
+	</tr>
+	<tr>
+		<td>0x2b</td>
+		<td>wrfen</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write floating-point enable</td>
+	</tr>
+	<tr>
+		<td>0x2d</td>
+		<td>wrvptptr</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write virtual page table pointer</td>
+	</tr>
+	<tr>
+		<td>0x30</td>
+		<td>swpctx</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Swap privileged context</td>
+	</tr>
+	<tr>
+		<td>0x31</td>
+		<td>wrval</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write system value</td>
+	</tr>
+	<tr>
+		<td>0x32</td>
+		<td>rdval</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Read system value</td>
+	</tr>
+	<tr>
+		<td>0x33</td>
+		<td>tbi</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Real system value</td>
+	</tr>
+	<tr>
+		<td>0x34</td>
+		<td>wrent</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write system entry address</td>
+	</tr>
+	<tr>
+		<td>0x35</td>
+		<td>swpipl</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Swap IPL</td>
+	</tr>
+	<tr>
+		<td>0x36</td>
+		<td>rdps</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Read processor status</td>
+	</tr>
+	<tr>
+		<td>0x37</td>
+		<td>wrkgp</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write kernel global pointer</td>
+	</tr>
+	<tr>
+		<td>0x38</td>
+		<td>wrusp</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write user stack pointer</td>
+	</tr>
+	<tr>
+		<td>0x39</td>
+		<td>wrperfmon</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Performance monitoring function</td>
+	</tr>
+	<tr>
+		<td>0x3a</td>
+		<td>rdusp</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Read user stack pointer</td>
+	</tr>
+	<tr>
+		<td>0x3c</td>
+		<td>whami</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Who am I - get processor number</td>
+	</tr>
+	<tr>
+		<td>0x3d</td>
+		<td>retsys</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Return from system call</td>
+	</tr>
+	<tr>
+		<td>0x3e</td>
+		<td>wtint</td>
+		<td><span class="abi abi-openvms">OpenVMS</span><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Wait for interrupt</td>
+	</tr>
+	<tr>
+		<td>0x3f</td>
+		<td>rti</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Return from interrupt</td>
+	</tr>
+	<tr>
+		<td>0x80</td>
+		<td>bpt</td>
+		<td><span class="abi abi-openvms">OpenVMS</span><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Breakpoint (R16 = code)</td>
+	</tr>
+	<tr>
+		<td>0x81</td>
+		<td>bugchk</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Bugcheck trap (R16 = code)</td>
+	</tr>
+	<tr>
+		<td>0x83</td>
+		<td>callsys</td>
+		<td><span class="abi abi-osf1">OSF/1</span><span class="abi abi-winnt">WinNT</span></td>
+		<td>Call system service</td>
+	</tr>
+	<tr>
+		<td>0x86</td>
+		<td>imb</td>
+		<td><span class="abi abi-osf1">OSF/1</span><span class="abi abi-winnt">WinNT</span></td>
+		<td>I-stream memory barrier</td>
+	</tr>
+	<tr>
+		<td>0x8f</td>
+		<td>prober</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Probe for read access</td>
+	</tr>
+	<tr>
+		<td>0x90</td>
+		<td>probew</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Probe for write access</td>
+	</tr>
+	<tr>
+		<td>0x91</td>
+		<td>rd_ps</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Move processor status</td>
+	</tr>
+	<tr>
+		<td rowspan="2">0x92</td>
+		<td>rei</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Return from exception or interrupt</td>
+	</tr>
+	<tr>
+		<td>urti</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Return from user mode trap</td>
+	</tr>
+	<tr>
+		<td>0x9e</td>
+		<td>rdunique</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Read unique value</td>
+	</tr>
+	<tr>
+		<td>0x9f</td>
+		<td>wrunique</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Write unique value</td>
+	</tr>
+	<tr>
+		<td>0xa0</td>
+		<td>amovrr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Atomic move from register to register</td>
+	</tr>
+	<tr>
+		<td>0xa1</td>
+		<td>amovrm</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Atomic move from register to memory</td>
+	</tr>
+	<tr>
+		<td>0xa2</td>
+		<td>insqhilr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Insert into longword queue at head interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa3</td>
+		<td>insqtilr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Insert into longword queue at tail interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa4</td>
+		<td>insqhiqr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Insert into quadword queue at head interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa5</td>
+		<td>insqtiqr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Insert into quadword queue at tail interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa6</td>
+		<td>remqhilr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Remove from longword queue at head interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa7</td>
+		<td>remqtilr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Remove from longword queue at tail interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa8</td>
+		<td>remqhiqr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Remove from quadword queue at head interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xa9</td>
+		<td>remqtiqr</td>
+		<td><span class="abi abi-openvms">OpenVMS</span></td>
+		<td>Remove from quadword queue at tail interlocked resident</td>
+	</tr>
+	<tr>
+		<td>0xaa</td>
+		<td>gentrap</td>
+		<td><span class="abi abi-openvms">OpenVMS</span><span class="abi abi-osf1">OSF/1</span><span class="abi abi-winnt">WinNT</span></td>
+		<td>Generate software trap</td>
+	</tr>
+	<tr>
+		<td>0xab</td>
+		<td>rdteb</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Read TEB internal processor register</td>
+	</tr>
+	<tr>
+		<td>0xac</td>
+		<td>kbpt</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Generate breakpoint trap</td>
+	</tr>
+	<tr>
+		<td>0xad</td>
+		<td>callkd</td>
+		<td><span class="abi abi-winnt">WinNT</span></td>
+		<td>Call kernel debugger</td>
+	</tr>
+	<tr>
+		<td>0xae</td>
+		<td>clrfen</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td>Clear floating-point enable</td>
+	</tr>
+	<tr>
+		<td>0xbe</td>
+		<td>nphalt</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>0xbf</td>
+		<td>copypal</td>
+		<td><span class="abi abi-osf1">OSF/1</span></td>
+		<td></td>
+	</tr>
+
+
+</table>
+
+</body>
+</html>

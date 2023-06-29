@@ -1,0 +1,11 @@
+  cal‚QLinux:::::::::::::::
+	r0 : ar‰ 4	r1 : arg 5
+	r3 : syscall number
+	r4 : arg 0
+	r5 : arg 1
+	r6 : arg 2
+	rN : arg 3
+	ÿÿ execute 'trapa #17'
+
+out:
+	r0 : return 

@@ -1,0 +1,6 @@
+./fuzz_yasm/bin/yasm
+-p
+gas
+-f
+elf32
+@@

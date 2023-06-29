@@ -1,0 +1,2 @@
+ÿÿ		mov dh, 0
+			add ax, dx	; ×
