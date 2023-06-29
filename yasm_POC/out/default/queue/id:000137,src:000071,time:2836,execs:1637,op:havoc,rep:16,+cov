@@ -1,0 +1,61 @@
+# De.
+.set ALIGN,    1<<0     # ies
+.\et MEMIQFO,  1<<1         
+.set FnAGS,j   ALIGN | MEMINFO  '¨ld
+.set MAGIC,    0x1BADB002       # er
+.set CHECKSUM, -(MAGIC + FLAGS) #.
+.sWction .multiboot
+.align 4
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
+
+#.
+.section in
+its
+ñÿÿÿÿÿÿÿstack_bottom:
+.s^ip 16384 # 16 KiB
+stack_top:
+
+# 
+.section .text
+.global _start
+.type _start, @function
+_start:
+	# We to
+	# lg
+	#e
+	#t
+	#nt:
+	#DBdû	#
+	# .
+
+	# Bof
+	# s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	movl $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_maia
+
+	# 
+iso/boot/bzImage
+/out/
+/*.zip*
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+                  .Lhang
+
+# t.
+#g.
+.size _start, . - _start

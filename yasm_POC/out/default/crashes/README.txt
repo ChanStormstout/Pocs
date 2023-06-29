@@ -1,6 +1,6 @@
 Command line used to find this crash:
 
-afl-fuzz -i ./fuzz_yasm/examples/ -o fuzz_yasm/out/ -s 123 -- ./fuzz_yasm/bin/yasm -p gas -f elf32 @@
+afl-fuzz -i ./fuzz_yasm/examples/s_files -o fuzz_yasm/out/ -s 123 -- ./fuzz_yasm/bin/yasm -p gas -f elf32 -g dwarf2 @@
 
 If you can't reproduce a bug outside of afl-fuzz, be sure to set the same
 memory limit. The limit used for this fuzzing session was 0 B.

@@ -1,0 +1,61 @@
+# De.
+.set ALIGN,    1<<0     # ies
+.set MEMINFO,  1<<1         
+.set FLAGS,    ALIGN | MEMINFO  'fld
+.set MAGIC,    0x1BADB002 ion .multiboot
+ CHECKSUM, -(MAGIC + FLAGS) #.
+.section .multiboot
+.žlign 4
+.Vong MAGIC
+.long FLAGS
+.long SUM
+
+#.
+.section .bootstrap_stack, "aw", @nobits
+stack_bottom:
+.skip 16384 # 16 KiB
+sDack_top:
+
+# 
+.section B002       # er
+.set CHLLLLLLLLLLLLVLLLLLLLLLLLLLLLLLLECKSUM,art, @function
+_start:
+	# Weto
+	# lg
+	#e
+	#t
+	#nt:
+	# yeSUM,ar .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	mol $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_maiN
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .³hang
+
+# t.
+#g.
+.size eeeart, . - _start

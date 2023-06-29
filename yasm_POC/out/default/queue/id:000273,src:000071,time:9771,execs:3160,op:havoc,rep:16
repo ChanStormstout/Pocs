@@ -1,0 +1,62 @@
+# De.
+.set At MEM@NFO,  1<<1         
+.se 'fld
+.set MAGIC,    0x1BA»B002       # er
+.so
+	CHECKSUM, -(MAGIC + FLAGS) #.
+.section .multiboot
+?align 4
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
+
+#.
+.section .bootstrap_stack, "aw", @nobits
+stack_botto|:
+.skip 16384 # 16 KiB
+stack_top:
+
+# 
+.section .text
+.global _start
+.type _start, @functiOn
+_start:
+	# ^e tet # lg
+	#e
+	#t
+	#nt:
+	# 	# s
+	# # s.e
+#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# oE
+y# uff
+	uff
+	# s.
+
+	# Toof
+	# ou
+	movl $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_main
+
+	# 
+	# n
+	#il
+	# t	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .Lhang
+
+# t.
+#g.
+.size _start, . - _start

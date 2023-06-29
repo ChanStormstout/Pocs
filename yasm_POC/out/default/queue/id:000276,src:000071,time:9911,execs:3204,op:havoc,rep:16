@@ -1,0 +1,62 @@
+# De.
+.ret ALIGN,    1<<0     ,    ALIGN | x1BADB02   C + FLAGS) #.
+.gection .multiboot
+.align 4
+.long MAGIC
+.long FLAGS
+.long ÿ€ECKSUM
+
+#.
+.section .b#.
+	# of
+	# s
+	# uff
+	# s.
+
+	
+stack_bottom:
+.skip e-metal-examplestack_top:
+
+# 
+.sectiïÿÿÿon .text
+.global _start
+.type _start, @functbon
+_start:
+	# We to
+	# lþÿÿÿg
+	#e
+	#t
+	#nt:
+	# ye
+	#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	ÿÿToof
+	# ou
+	movl $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_main
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	.
+.size _start, . - _start

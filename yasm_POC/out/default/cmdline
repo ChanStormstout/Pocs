@@ -3,4 +3,6 @@
 gas
 -f
 elf32
+-g
+dwarf2
 @@

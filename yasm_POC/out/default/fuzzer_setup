@@ -1,10 +1,10 @@
 # environment variables:
 AFL_CUSTOM_INFO_PROGRAM=./fuzz_yasm/bin/yasm
-AFL_CUSTOM_INFO_PROGRAM_ARGV=-p gas -f elf32 @@
+AFL_CUSTOM_INFO_PROGRAM_ARGV=-p gas -f elf32 -g dwarf2 @@
 AFL_CUSTOM_INFO_OUT=fuzz_yasm/out//default
 AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1
 AFL_TRY_AFFINITY=1
 AFL_SKIP_CPUFREQ=1
 AFL_USE_ASAN=1
 # command line:
-'afl-fuzz' '-i' './fuzz_yasm/examples/' '-o' 'fuzz_yasm/out/' '-s' '123' '--' './fuzz_yasm/bin/yasm' '-p' 'gas' '-f' 'elf32' '@@'
+'afl-fuzz' '-i' './fuzz_yasm/examples/s_files' '-o' 'fuzz_yasm/out/' '-s' '123' '--' './fuzz_yasm/bin/yasm' '-p' 'gas' '-f' 'elf32' '-g' 'dwarf2' '@@'

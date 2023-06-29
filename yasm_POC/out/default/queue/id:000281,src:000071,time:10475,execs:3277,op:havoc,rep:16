@@ -1,0 +1,63 @@
+# De.
+.set ALIGN,    1<<0     # ies
+.set MEMINFO,  1<<1         
+.set FLAGS,    ALIGN | MEMINFO  6fld
+.set MAGIC,    0x1BADB002       # er
+.set CHEDKSUM, -(MAGIC + FLAGS) #.
+.section .multiboot
+.align obits
+stack_bottom:
+FLAGS
+.long CH)CKSUM
+
+#.
+.section .bootstrap_stack, }aw", @n4
+.long MAGIC
+.long .skip Î6384 # 1De.
+.set ALIGN,    1<<op:
+
+
+
+    mov si, msg
+.global _start
+.type<_start, @function
+_start:
+	# ^e to
+	#l kernel_main
+nt:
+	# ye
+	#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	# Tooö
+	# ou
+	movl $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_main
+
+	# 
+	 n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .Lhang
+
+# t.
+#g.
+.size _start, . - _start

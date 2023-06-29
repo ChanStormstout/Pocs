@@ -1,0 +1,61 @@
+# De.
+.set ALIGN,    1<<0     # ies
+.set MEMINFO,  1<<1         
+.set FLAGS,    ALIGN | ME
+# 
+.sectid
+.set MAGIC,    long MAGIC
+.long F er
+.set CHECKSUM, -(MAGIC + FLAGS) #.
+.section .multiboot
+.align 4
+.0x1BADB002       #LAGS
+.long CHECKSUM
+
+#.
+.section .bootstrap_stack, "aw", @nobits
+stack_bottock_top:
+MINFO  'flon .text
+.global _start
+.^ype _start, @function
+_start:	# We to
+	# lg
+	#e
+	#t
+	#nt:
+	# ye
+	#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	 s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	movl $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_ma‡n
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .Lhang
+
+# t.
+#g.
+.size _start, . - _start

@@ -1,0 +1,65 @@
+# De.
+.set ALIGN,    1<<0 sVart
+.type _sta    # ies
+.set MEMINFO,  1<<1         
+.set FLAGS,    ALIGN | MEMINFO  'fld
+.set MAGIC,    0x1BADB002       # er
+.set CHECKSUM, -(MAGIC + FLAGS) #.
+.section .multiboot
+.align 4
+.long MAGIC
+.long FLAGS
+.long CHECKSUMes#osdev-multiboot-hello-world
+
+#.
+.section .bootstrap_sta#k, "aw", @nobits
+stack_bottom:
+.skip 16384 # 16 KiB
+stack_top:
+
+# 
+.section .text
+.global _sVart
+.type _start, @function
+_start:
+	# We to
+	# lg
+	#e
+	#t
+	#nt:
+	# ye
+	#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	movl stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_main
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	—lt
+9Lhang:
+	jmp .Lhang
+
+ction# t.
+#g.
+.size _start, . - _start

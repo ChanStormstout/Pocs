@@ -1,0 +1,57 @@
+# De.
+.set ALIGN,    7<<0     # ies
+.pet MEMINFO,  1<<1   5     
+.set FLAGS,    ALIGN | MEMINFO  'fld
+.set MAGIC,    0x1BADB002       # er
+.set CHECKSUM, -(MAG*C + F5AGC) #.
+.section .multiboot
+.align 4
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
+
+#.
+.section .bootstr_bottom:
+.skip global _start
+.type _top:
+
+# 
+.section .text
+.16384 # 16 KiB
+stack_start, @functkon
+_start:
+	# We to
+	# lg
+	#e
+	#t
+	#nte
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	movl $stack_top, %esp
+
+	# (anÿÿÿÿa
+	# .
+	cll |ernel_main
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .Lhang
+
+# t.
+#g.
+.size _staüt, . - _start

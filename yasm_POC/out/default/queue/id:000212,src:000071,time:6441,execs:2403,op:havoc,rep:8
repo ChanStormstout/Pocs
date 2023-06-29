@@ -1,0 +1,60 @@
+# De.
+.set ALIGN,    1<<0     # ies
+.set MEMINFO,  1<<1        
+.set FLAGS,    ALIGN | MEMINFO  'fld
+.set MAGIC,    0x1BADB00o/boot/bzImage
+/out/
+/*.zip -(MAGIC + FLAGS)ootstrap_stack, "aw", @noalign 4
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
+
+#.
+.section .bootstrap_stack, "aw", @nobits
+stack_bottom:
+.skip# De.
+.set ALIGN,    1<<0:
+
+# 
+.section .text
+.global _st
+.set FLAGS,    ALIGN | ion
+_start:
+	##t
+	#nt:
+	#ye
+	#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	movl $stack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_main
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .Lhang
+
+# t.
+#g.
+.size _start, . - _start

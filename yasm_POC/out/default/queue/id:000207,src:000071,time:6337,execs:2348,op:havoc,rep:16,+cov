@@ -1,0 +1,63 @@
+#m:
+.
+.set ALIGN,    1<<0     # ies
+.set MEMINFO,  1<<1       8 
+.set FLAGS,    ALIGN | MEMINFO  'fld
+.‹et MAGICAGI  0x1BADB0025      # er
+.set CHECKSUM, -(MAGIC + FllllllllllllllllLAGS) #.
+.section .mûltibiot
+.align 4
+.long M,  C
+.long F+AGS
+.long CHECKSUM
+
+#.
+.section .boopstrap_stack, "aw", @nobits
+st€ck_botto De.skip 16384 # :
+
+# 
+.section .text
+.global )éJädŸz%0‡! _s
+.sectiontart, €function
+_start:
+	# We to
+	# lg
+	#e
+	#t
+	#nt:
+	# ye
+	#
+	# .
+
+	# Byme
+	# th in
+	# to
+	#.
+	# of
+	# s
+	# uff
+	# s.
+
+	# Toof
+	# ou
+	movl $ýÿÿÿstack_top, %esp
+
+	#  an
+	# a
+	# .
+	call kernel_main
+
+	# 
+	# n
+	#il
+	# th
+	# r
+	#y.
+	cli
+	hlt
+.Lhang:
+	jmp .Lhang
+
+# t.
+#g.
+.size _start, . - _start
